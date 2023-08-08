@@ -18,12 +18,15 @@ namespace RvtSessionRecoverer.Models
             //FilteredElementCollector viewCollector = new FilteredElementCollector(doc);
             //viewCollector.OfClass(typeof(View));
 
-            List<View> SessionSheets = new List<View>();
-            foreach (Element viewElement in viewCollector)
-            {
-                View view = (View)viewElement;
-                SessionSheets.Add(view);
-            }
+            //List<View> SessionSheets = new List<View>();
+            //foreach (Element viewElement in viewCollector)
+            //{
+            //    View view = (View)viewElement;
+            //    SessionSheets.Add(view);
+            //}
+
+            List<UIView> SessionSheets = new List<UIView>();
+            SessionSheets = uiDocument.GetOpenUIViews() as List<UIView>;
 
             return SessionSheets;
         }

@@ -33,13 +33,23 @@ namespace RvtSessionRecoverer.ViewModels
             List<UIView> SessionSheets = Models.ViewUtils.GetSessionSheets(_commandData, _uiDocument);
             StringBuilder output = new StringBuilder();
 
-            foreach (View sheet in SessionSheets) {
-                output.Append(sheet.Name);
-                output.Append("/r");
-                }
+            //try-catch for any non-view instances
+            List<View> Views = new List<View>();
+            foreach (var sessionSheet in SessionSheets)
+            {
+                Views.Add(_uiDocument.Document.GetElement(sessionSheet.ViewId) as View);
+            }
+
+            foreach (View view in Views)
+            {
+                output.Append(view.Name);
+                output.Append("\r");
+            }
 
             OutputString = output.ToString();
 
+            TaskDialog.Show("Список открытых видов", $"Открытые виды - {output}");
+            
             RaiseCloseRequest();
         }
 

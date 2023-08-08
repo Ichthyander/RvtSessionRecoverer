@@ -34,7 +34,7 @@
                     Content="Выбрать"/>
             </Grid>
 
-            <Button Content="Восстановить" Command="{Binding OnLoadSessionCommand}"/>
+            <Button Content="Восстановить" Command="{Binding LoadSessionCommand}"/>
             <TextBlock TextWrapping="Wrap" Text="{Binding OutputString}"/>
         </StackPanel>
     </Grid>
