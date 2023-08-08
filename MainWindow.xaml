@@ -1,0 +1,42 @@
+﻿<Window x:Class="RvtSessionRecoverer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RvtSessionRecoverer"
+        mc:Ignorable="d"
+        Title="Менеджер сессий" Height="300" Width="400">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <StackPanel>
+            <Label Content="Сохранение текущей сессии"/>
+            <Button Content="Сохранить"/>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1">
+            <Label Content="Восстановление сессии"/>
+            <Label Content="Расположение сессии"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.5*"/>
+                    <ColumnDefinition Width="0.5*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border BorderBrush="DodgerBlue" BorderThickness="0.3">
+                    <TextBlock Margin="5"/>
+                </Border>
+
+                <Button Grid.Column="1"
+                    Content="Выбрать"/>
+            </Grid>
+
+            <Button Content="Восстановить" Command="{Binding OnLoadSessionCommand}"/>
+            <TextBlock TextWrapping="Wrap" Text="{Binding OutputString}"/>
+        </StackPanel>
+    </Grid>
+
+</Window>
