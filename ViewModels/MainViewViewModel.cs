@@ -17,7 +17,7 @@ namespace RvtSessionRecoverer.ViewModels
         private ExternalCommandData _commandData;
         private UIDocument _uiDocument;
 
-        //Text block content
+        //TextBlock content
         string outputString;
         public string OutputString
         {
