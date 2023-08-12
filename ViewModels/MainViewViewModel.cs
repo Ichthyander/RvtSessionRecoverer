@@ -62,10 +62,11 @@ namespace RvtSessionRecoverer.ViewModels
             {
                 output.Append(view.Name);
                 output.Append("\r");
+                uiDocument.ActiveView = view;
             }
 
             OutputString = output.ToString();
-           
+
             //Will be used later
             //RaiseCloseRequest();
         }
