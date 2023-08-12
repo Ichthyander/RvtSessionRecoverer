@@ -12,58 +12,47 @@ using System.Threading.Tasks;
 namespace RvtSessionRecoverer.Models
 {
     //Serializable class for saving and loading Revit sessions
+    [Serializable]
     public class Session
     {
-        List<ElementId> viewIds = new List<ElementId>();
-        public List<ElementId> ViewIds
+        List<int> viewIntIds = new List<int>();
+        public List<int> ViewIntIds
         {
             get
             {
-                return viewIds;
+                return viewIntIds;
             }
             set
             {
-                viewIds = value;
+                viewIntIds = value;
             }
         }
 
-        public Session(List<ElementId> viewIds)
+        //have to store integer values instead of ElementId 'cos of that FPoS Deserialization method
+        public Session(List<int> viewIntIds)
         {
-            ViewIds = viewIds;
+            ViewIntIds = viewIntIds;
         }
 
-        public void SerializeSession()
+        public List<ElementId> GetViewElementIds()
         {
-            JsonSerializerOptions options = new JsonSerializerOptions()
+            List<ElementId> elementIds = new List<ElementId>();
+            foreach (var viewIntId in viewIntIds)
             {
-                Encoder = JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.Cyrillic),
-                WriteIndented = true
-            };
-
-            //ВРЕМЕННО!!! сохраняем файл на рабочем столе
-            string dirPath = "C:/Users/Фуфелшмерц/Desktop/JSON";
-            if (!Directory.Exists(dirPath))
-            {
-                Directory.CreateDirectory(dirPath);
+                elementIds.Add(new ElementId(viewIntId));
             }
-            string filePath = dirPath + "/Session.json";
-            using (StreamWriter sw = new StreamWriter(filePath))
-            {
-                sw.WriteLine(JsonSerializer.Serialize(ViewIds, options));
-            }
+            return elementIds;
         }
 
-        public void DeserializeSession()
+        public List<View> GetViews(Document document)
         {
-            string jsonString = String.Empty;
-
-            string path = "C:/Users/Фуфелшмерц/Desktop/JSON/Session.json";
-            using (StreamReader sr = new StreamReader(path))
+            List<View> views = new List<View>();
+            foreach (var viewId in viewIntIds)
             {
-                jsonString = sr.ReadToEnd();
+                ElementId elementId = new ElementId(viewId);
+                views.Add(document.GetElement(elementId) as View);
             }
-
-            ViewIds = JsonSerializer.Deserialize<List<ElementId>>(jsonString);
+            return views;
         }
     }
 }

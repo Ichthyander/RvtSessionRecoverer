@@ -1,6 +1,7 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Prism.Commands;
+using RvtSessionRecoverer.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +16,8 @@ namespace RvtSessionRecoverer.ViewModels
     {
         //Everything needed from Revit
         private ExternalCommandData _commandData;
-        private UIDocument _uiDocument;
+        private UIDocument uiDocument;
+        private Document document;
 
         //TextBlock content
         string outputString;
@@ -39,7 +41,8 @@ namespace RvtSessionRecoverer.ViewModels
         public MainViewViewModel(ExternalCommandData commandData)
         {
             _commandData = commandData;
-            _uiDocument = _commandData.Application.ActiveUIDocument;
+            uiDocument = _commandData.Application.ActiveUIDocument;
+            document = uiDocument.Document;
 
             //Delegating commands
             SaveSessionCommand = new DelegateCommand(OnSaveSessionCommand);
@@ -50,15 +53,10 @@ namespace RvtSessionRecoverer.ViewModels
         private void OnLoadSessionCommand()
         {
             //Getting list of UIViews by using method from model
-            List<UIView> SessionSheets = Models.ViewUtils.GetSessionSheets(_commandData, _uiDocument);
-            StringBuilder output = new StringBuilder();
+            Session UserSession = SerialisationUtils.DeserializeSession();
+            StringBuilder output = new StringBuilder();     //debug purposes
 
-            //IMPLEMENT try-catch for any non-view instances!!!
-            List<View> Views = new List<View>();
-            foreach (var sessionSheet in SessionSheets)
-            {
-                Views.Add(_uiDocument.Document.GetElement(sessionSheet.ViewId) as View);
-            }
+            List<View> Views = UserSession.GetViews(document);
 
             foreach (View view in Views)
             {
@@ -67,17 +65,15 @@ namespace RvtSessionRecoverer.ViewModels
             }
 
             OutputString = output.ToString();
-
-            //Just some dubugging features
-            //TaskDialog.Show("Список открытых видов", $"Открытые виды - {output}");
-            
+           
             //Will be used later
             //RaiseCloseRequest();
         }
 
         private void OnSaveSessionCommand()
         {
-            throw new NotImplementedException();
+            Session UserSession = new Session(ViewUtils.GetSessionViews(_commandData, uiDocument));
+            SerialisationUtils.SerializeSession(UserSession);
         }
 
         public event EventHandler CloseRequest;

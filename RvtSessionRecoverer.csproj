@@ -109,6 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
+    <Compile Include="Models\SerialisationUtils.cs" />
     <Compile Include="Models\Session.cs" />
     <Compile Include="Models\ViewUtils.cs" />
     <Compile Include="ViewModels\MainViewViewModel.cs" />
