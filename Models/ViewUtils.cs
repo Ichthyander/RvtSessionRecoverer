@@ -10,25 +10,22 @@ namespace RvtSessionRecoverer.Models
 {
     class ViewUtils
     {
-        public static List<UIView> GetSessionSheets(ExternalCommandData commandData, UIDocument uiDocument)
+        public static List<int> GetSessionViews(ExternalCommandData commandData, UIDocument uiDocument)
         {
             Document doc = commandData.Application.ActiveUIDocument.Document;
 
-            //Выбор открытых видов
-            //FilteredElementCollector viewCollector = new FilteredElementCollector(doc);
-            //viewCollector.OfClass(typeof(View));
+            //Creating list of opened UIViews
+            List<UIView> sessionUIViews = new List<UIView>();
+            sessionUIViews = uiDocument.GetOpenUIViews() as List<UIView>;
 
-            //List<View> SessionSheets = new List<View>();
-            //foreach (Element viewElement in viewCollector)
-            //{
-            //    View view = (View)viewElement;
-            //    SessionSheets.Add(view);
-            //}
+            //Creating list of View IDs
+            List<int> sessionViewIds = new List<int>();
+            foreach (UIView sessionUIView in sessionUIViews)
+            {
+                sessionViewIds.Add(sessionUIView.ViewId.IntegerValue);
+            }
 
-            List<UIView> SessionSheets = new List<UIView>();
-            SessionSheets = uiDocument.GetOpenUIViews() as List<UIView>;
-
-            return SessionSheets;
+            return sessionViewIds;
         }
     }
 }

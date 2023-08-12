@@ -14,7 +14,7 @@
         
         <StackPanel>
             <Label Content="Сохранение текущей сессии"/>
-            <Button Content="Сохранить"/>
+            <Button Content="Сохранить" Command="{Binding SaveSessionCommand}"/>
         </StackPanel>
 
         <StackPanel Grid.Column="1">
