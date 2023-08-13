@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using Autodesk.Revit.DB;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,7 @@ namespace RvtSessionRecoverer.Models
             saveFileDialog.FilterIndex = 2;
             saveFileDialog.Title = "Сохранение сессии";
             saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            saveFileDialog.FileName = "Сессия";
+            saveFileDialog.FileName = "Сессия_" + DateTime.Now.ToString("yyyy_MM_dd_H-mm");
 
             // Show save file dialog box
             bool? result = saveFileDialog.ShowDialog();
