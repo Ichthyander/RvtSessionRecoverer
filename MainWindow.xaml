@@ -5,38 +5,56 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RvtSessionRecoverer"
         mc:Ignorable="d"
-        Title="Менеджер сессий" Height="300" Width="400">
+        Title="Менеджер сессий" Height="300" Width="300" MinHeight="300" MinWidth="300">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        
-        <StackPanel>
-            <Label Content="Сохранение текущей сессии"/>
-            <Button Content="Сохранить" Command="{Binding SaveSessionCommand}"/>
-        </StackPanel>
+        <TabControl Height="Auto">
+            <TabItem Header="Сохранение сессии">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.5*"/>
+                        <ColumnDefinition Width="0.5*"/>
+                    </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="1">
-            <Label Content="Восстановление сессии"/>
-            <Label Content="Расположение сессии"/>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1.5*"/>
-                    <ColumnDefinition Width="0.5*"/>
-                </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition MaxHeight="100" Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-                <Border BorderBrush="DodgerBlue" BorderThickness="0.3">
-                    <TextBlock Margin="5"/>
-                </Border>
+                    <Label Grid.Row="0" Grid.ColumnSpan="2" Content="Открытые виды в текущей сессии:"/>
 
-                <Button Grid.Column="1"
-                    Content="Выбрать"/>
-            </Grid>
+                    <Border Grid.Row="1" Grid.ColumnSpan="2">
+                        <!--Should try to make list with ListBox-->
+                        <!--<ListBox  MinHeight="180"/>-->
+                        <TextBlock MinHeight="180" TextWrapping="Wrap" Text="{Binding CurrentlyOpenedViews}"/>
+                    </Border>
 
-            <Button Content="Восстановить" Command="{Binding LoadSessionCommand}"/>
-            <TextBlock TextWrapping="Wrap" Text="{Binding OutputString}"/>
-        </StackPanel>
+                    <Label Grid.Row="2" Content="Сохранение текущей сессии"/>
+                    <Button Grid.Row="2" Grid.Column="1" Content="Сохранить" Command="{Binding SaveSessionCommand}"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Восстановление сессии">
+                <StackPanel Grid.Column="1">
+                    <Label Content="Восстановление сессии"/>
+                    <Label Content="Расположение сессии"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.5*"/>
+                            <ColumnDefinition Width="0.5*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border BorderBrush="DodgerBlue" BorderThickness="0.3">
+                            <TextBlock Margin="5"/>
+                        </Border>
+
+                        <Button Grid.Column="1"
+                        Content="Выбрать"/>
+                    </Grid>
+
+                    <Button Content="Восстановить" Command="{Binding LoadSessionCommand}"/>
+                    <TextBlock TextWrapping="Wrap" Text="{Binding OutputString}"/>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
     </Grid>
-
 </Window>

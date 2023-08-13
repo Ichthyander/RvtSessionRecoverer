@@ -19,6 +19,23 @@ namespace RvtSessionRecoverer.ViewModels
         private UIDocument uiDocument;
         private Document document;
 
+        Session UserSession;
+
+        //Text that represents opened views in current Revit session
+        string currentlyOpenedViews;
+        public string CurrentlyOpenedViews
+        {
+            get
+            {
+                return currentlyOpenedViews;
+            }
+            set
+            {
+                currentlyOpenedViews = value;
+                OnPropertyChanged();
+            }
+        }
+
         //TextBlock content
         string outputString;
         public string OutputString
@@ -47,13 +64,31 @@ namespace RvtSessionRecoverer.ViewModels
             //Delegating commands
             SaveSessionCommand = new DelegateCommand(OnSaveSessionCommand);
             LoadSessionCommand = new DelegateCommand(OnLoadSessionCommand);
+
+            //Initializing UserSession for output in TextBlock from "Save" Tab 
+            UserSession = new Session(ViewUtils.GetSessionViews(_commandData, uiDocument));
+            
+            //debug
+            StringBuilder output = new StringBuilder();     //debug purposes
+
+            List<View> Views = UserSession.GetViews(document);
+
+            foreach (View view in Views)
+            {
+                output.Append(view.Name);
+                output.Append("\r");
+                uiDocument.ActiveView = view;
+            }
+
+            CurrentlyOpenedViews = output.ToString();
+            //debug
         }
 
         //Loading list of previously opened views
         private void OnLoadSessionCommand()
         {
             //Getting list of UIViews by using method from model
-            Session UserSession = SerialisationUtils.DeserializeSession();
+            UserSession = SerialisationUtils.DeserializeSession();
             StringBuilder output = new StringBuilder();     //debug purposes
 
             List<View> Views = UserSession.GetViews(document);
@@ -73,7 +108,9 @@ namespace RvtSessionRecoverer.ViewModels
 
         private void OnSaveSessionCommand()
         {
-            Session UserSession = new Session(ViewUtils.GetSessionViews(_commandData, uiDocument));
+            Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+
             SerialisationUtils.SerializeSession(UserSession);
         }
 

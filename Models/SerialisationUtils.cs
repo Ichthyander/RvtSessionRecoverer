@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Win32;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,27 +16,56 @@ namespace RvtSessionRecoverer.Models
     {
         public static void SerializeSession(Session UserSession)
         {
-            //ВРЕМЕННО!!! сохраняем файл на рабочем столе
-            string dirPath = "C:/Users/Фуфелшмерц/Desktop/JSON";
-            if (!Directory.Exists(dirPath))
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+
+            saveFileDialog.DefaultExt = ".json";
+            saveFileDialog.AddExtension = true;
+            saveFileDialog.Filter = "json файлы (*.json)|*.json|Все файлы (*.*)|*.*";
+            saveFileDialog.FilterIndex = 2;
+            saveFileDialog.Title = "Сохранение сессии";
+            saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            saveFileDialog.FileName = "Сессия";
+
+            // Show save file dialog box
+            bool? result = saveFileDialog.ShowDialog();
+
+            if (result == true)
             {
-                Directory.CreateDirectory(dirPath);
-            }
-            string filePath = dirPath + "/Session.json";
-            using (StreamWriter sw = new StreamWriter(filePath))
-            {
-                sw.WriteLine(JsonConvert.SerializeObject(UserSession));
+                // Save document
+                string filename = saveFileDialog.FileName;
+
+                using (StreamWriter sw = new StreamWriter(filename))
+                {
+                    sw.WriteLine(JsonConvert.SerializeObject(UserSession));
+                }
             }
         }
 
         public static Session DeserializeSession(string path = "C:/Users/Фуфелшмерц/Desktop/JSON/Session.json")
         {
-            //ВРЕМЕННО!!! сохраняем файл на рабочем столе 
-            string jsonString = String.Empty;
+            OpenFileDialog openFileDialog = new OpenFileDialog();
 
-            using (StreamReader sr = new StreamReader(path))
+            openFileDialog.Multiselect = false;
+            openFileDialog.DefaultExt = ".json";
+            openFileDialog.AddExtension = true;
+            openFileDialog.Filter = "json файлы (*.json)|*.json|Все файлы (*.*)|*.*";
+            openFileDialog.FilterIndex = 1;
+            openFileDialog.Title = "Открытие сессии";
+            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+            // Show open file dialog box
+            bool? result = openFileDialog.ShowDialog();
+
+            string jsonString = String.Empty;
+            if (result == true)
             {
-                jsonString = sr.ReadToEnd();
+                //Open document
+                string filename = openFileDialog.FileName;
+
+                using (StreamReader sr = new StreamReader(filename))
+                {
+                    jsonString = sr.ReadToEnd();
+                }
             }
 
             return JsonConvert.DeserializeObject<Session>(jsonString);
