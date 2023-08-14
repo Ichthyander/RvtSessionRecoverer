@@ -37,16 +37,16 @@ namespace RvtSessionRecoverer.ViewModels
         }
 
         //TextBlock content
-        string outputString;
-        public string OutputString
+        string loadedSession;
+        public string LoadedSession
         {
             get
             {
-                return outputString;
+                return loadedSession;
             }
             set
             {
-                outputString = value;
+                loadedSession = value;
                 OnPropertyChanged();
             }
         }
@@ -54,6 +54,7 @@ namespace RvtSessionRecoverer.ViewModels
         //Buttons
         public DelegateCommand SaveSessionCommand { get; }
         public DelegateCommand LoadSessionCommand { get; }
+        public DelegateCommand RestoreSessionCommand { get; }
 
         public MainViewViewModel(ExternalCommandData commandData)
         {
@@ -64,6 +65,7 @@ namespace RvtSessionRecoverer.ViewModels
             //Delegating commands
             SaveSessionCommand = new DelegateCommand(OnSaveSessionCommand);
             LoadSessionCommand = new DelegateCommand(OnLoadSessionCommand);
+            RestoreSessionCommand = new DelegateCommand(OnRestoreSessionCommand);
 
             //Initializing UserSession for output in TextBlock from "Save" Tab 
             UserSession = new Session(ViewUtils.GetSessionViews(_commandData, uiDocument));
@@ -81,10 +83,29 @@ namespace RvtSessionRecoverer.ViewModels
             }
 
             CurrentlyOpenedViews = output.ToString();
-            //debug
         }
 
-        //Loading list of previously opened views
+        //Actions on Restore button
+        private void OnRestoreSessionCommand()
+        {
+            if (LoadedSession != null)
+            {
+                List<View> Views = UserSession.GetViews(document);
+
+                foreach (View view in Views)
+                {
+                    uiDocument.ActiveView = view;
+                }
+
+                RaiseCloseRequest();
+            }
+            else
+            {
+                TaskDialog.Show("Ошибка!", "Не загружен файл сессии.");
+            }
+        }
+
+        //Actions on Load button
         private void OnLoadSessionCommand()
         {
             //Getting list of UIViews by using method from model
@@ -97,21 +118,16 @@ namespace RvtSessionRecoverer.ViewModels
             {
                 output.Append(view.Name);
                 output.Append("\r");
-                uiDocument.ActiveView = view;
             }
 
-            OutputString = output.ToString();
-
-            //Will be used later
-            //RaiseCloseRequest();
+            LoadedSession = output.ToString();
         }
 
+        //Actions on Save button
         private void OnSaveSessionCommand()
         {
-            Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-
-
             SerialisationUtils.SerializeSession(UserSession);
+            RaiseCloseRequest();
         }
 
         public event EventHandler CloseRequest;
