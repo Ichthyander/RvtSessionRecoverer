@@ -91,17 +91,20 @@ namespace RvtSessionRecoverer.ViewModels
             if (LoadedSession != null)
             {
                 List<View> Views = UserSession.GetViews(document);
+                int counter = 0;
 
                 foreach (View view in Views)
                 {
-                    uiDocument.ActiveView = view;
+                    if (view != null)
+                    {
+                        uiDocument.ActiveView = view;
+                        counter++;
+                    }
                 }
 
                 RaiseCloseRequest();
-            }
-            else
-            {
-                TaskDialog.Show("Ошибка!", "Не загружен файл сессии.");
+
+                TaskDialog.Show("Готово!", "Восстановлено " + counter + " видов");
             }
         }
 
@@ -112,12 +115,16 @@ namespace RvtSessionRecoverer.ViewModels
             UserSession = SerialisationUtils.DeserializeSession();
             StringBuilder output = new StringBuilder();     //debug purposes
 
+            //Add try-catch sentence for ID of non-view elements
             List<View> Views = UserSession.GetViews(document);
 
             foreach (View view in Views)
             {
-                output.Append(view.Name);
-                output.Append("\r");
+                if (view != null)
+                {
+                    output.Append(view.Name);
+                    output.Append("\r");
+                }
             }
 
             LoadedSession = output.ToString();

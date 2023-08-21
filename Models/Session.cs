@@ -34,15 +34,15 @@ namespace RvtSessionRecoverer.Models
             ViewIntIds = viewIntIds;
         }
 
-        public List<ElementId> GetViewElementIds()
-        {
-            List<ElementId> elementIds = new List<ElementId>();
-            foreach (var viewIntId in viewIntIds)
-            {
-                elementIds.Add(new ElementId(viewIntId));
-            }
-            return elementIds;
-        }
+        //public List<ElementId> GetViewElementIds()
+        //{
+        //    List<ElementId> elementIds = new List<ElementId>();
+        //    foreach (var viewIntId in viewIntIds)
+        //    {
+        //        elementIds.Add(new ElementId(viewIntId));
+        //    }
+        //    return elementIds;
+        //}
 
         public List<View> GetViews(Document document)
         {
