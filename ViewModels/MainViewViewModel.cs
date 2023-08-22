@@ -113,28 +113,33 @@ namespace RvtSessionRecoverer.ViewModels
         {
             //Getting list of UIViews by using method from model
             UserSession = SerialisationUtils.DeserializeSession();
-            StringBuilder output = new StringBuilder();     //debug purposes
 
-            //Add try-catch sentence for ID of non-view elements
-            List<View> Views = UserSession.GetViews(document);
-
-            foreach (View view in Views)
+            if (UserSession != null)
             {
-                if (view != null)
-                {
-                    output.Append(view.Name);
-                    output.Append("\r");
-                }
-            }
+                StringBuilder output = new StringBuilder();     
+                List<View> Views = UserSession.GetViews(document);
 
-            LoadedSession = output.ToString();
+                foreach (View view in Views)
+                {
+                    if (view != null)
+                    {
+                        output.Append(view.Name);
+                        output.Append("\r");
+                    }
+                }
+
+                LoadedSession = output.ToString();
+            }
         }
 
         //Actions on Save button
         private void OnSaveSessionCommand()
         {
-            SerialisationUtils.SerializeSession(UserSession);
-            RaiseCloseRequest();
+            bool? result = SerialisationUtils.SerializeSession(UserSession);
+            if (result == true)
+            {
+                RaiseCloseRequest();
+            }
         }
 
         public event EventHandler CloseRequest;

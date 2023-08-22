@@ -15,7 +15,7 @@ namespace RvtSessionRecoverer.Models
 {
     class SerialisationUtils
     {
-        public static void SerializeSession(Session UserSession)
+        public static bool? SerializeSession(Session UserSession)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
 
@@ -40,6 +40,8 @@ namespace RvtSessionRecoverer.Models
                     sw.WriteLine(JsonConvert.SerializeObject(UserSession));
                 }
             }
+
+            return result;
         }
 
         public static Session DeserializeSession(string path = "C:/Users/Фуфелшмерц/Desktop/JSON/Session.json")
@@ -49,7 +51,7 @@ namespace RvtSessionRecoverer.Models
             openFileDialog.Multiselect = false;
             openFileDialog.DefaultExt = ".json";
             openFileDialog.AddExtension = true;
-            openFileDialog.Filter = "json файлы (*.json)|*.json|Все файлы (*.*)|*.*";
+            openFileDialog.Filter = "json файлы (*.json)|*.json";
             openFileDialog.FilterIndex = 1;
             openFileDialog.Title = "Открытие сессии";
             openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
