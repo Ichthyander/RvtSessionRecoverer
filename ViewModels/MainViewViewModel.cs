@@ -21,6 +21,20 @@ namespace RvtSessionRecoverer.ViewModels
 
         Session UserSession;
 
+        List<ListViewElement> _SaveListViewData;
+        public List<ListViewElement> SaveListViewData
+        {
+            get
+            {
+                return _SaveListViewData;
+            }
+            set
+            {
+                _SaveListViewData = value;
+                OnPropertyChanged();
+            }
+        }
+
         //Text that represents opened views in current Revit session
         string currentlyOpenedViews;
         public string CurrentlyOpenedViews
@@ -67,22 +81,32 @@ namespace RvtSessionRecoverer.ViewModels
             LoadSessionCommand = new DelegateCommand(OnLoadSessionCommand);
             RestoreSessionCommand = new DelegateCommand(OnRestoreSessionCommand);
 
-            //Initializing UserSession for output in TextBlock from "Save" Tab 
+            //Initializing UserSession to display it in TextBlock from "Save" Tab 
             UserSession = new Session(ViewUtils.GetSessionViews(_commandData, uiDocument));
             
-            //debug
             StringBuilder output = new StringBuilder();     //debug purposes
 
             List<View> Views = UserSession.GetViews(document);
 
+            //Display opened views as string
             foreach (View view in Views)
             {
                 output.Append(view.Name);
                 output.Append("\r");
-                uiDocument.ActiveView = view;
+                //uiDocument.ActiveView = view;
             }
 
             CurrentlyOpenedViews = output.ToString();
+
+            //Display opened views as ListView
+            List<ListViewElement> ListViewData = new List<ListViewElement>();
+
+            foreach (View view in Views)
+            {
+                ListViewData.Add(new ListViewElement(view.Name, view.ViewType.ToString(), view.Id.IntegerValue));
+            }
+
+            SaveListViewData = ListViewData;
         }
 
         //Actions on Restore button
@@ -135,7 +159,19 @@ namespace RvtSessionRecoverer.ViewModels
         //Actions on Save button
         private void OnSaveSessionCommand()
         {
-            bool? result = SerialisationUtils.SerializeSession(UserSession);
+            List<int> SaveViewIds = new List<int>();
+
+            foreach (ListViewElement listViewElement in _SaveListViewData)
+            {
+                if (listViewElement.Selected)
+                {
+                    SaveViewIds.Add(listViewElement.ViewId);
+                }
+            }
+
+            Session SavedSession = new Session(SaveViewIds);
+
+            bool? result = SerialisationUtils.SerializeSession(SavedSession);
             if (result == true)
             {
                 RaiseCloseRequest();

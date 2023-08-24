@@ -24,9 +24,25 @@
                     <Label Grid.Row="0" Grid.ColumnSpan="2" Content="Открытые виды в текущей сессии:"/>
 
                     <Border Grid.Row="1" Grid.ColumnSpan="2">
-                        <!--Should try to make list with ListBox-->
+                        <!--Should try to make list with ListBox or ListView-->
                         <!--<ListBox  MinHeight="180"/>-->
-                        <TextBlock MinHeight="180" TextWrapping="Wrap" Text="{Binding CurrentlyOpenedViews}"/>
+                        <!--<TextBlock MinHeight="180" TextWrapping="Wrap" Text="{Binding CurrentlyOpenedViews}"/>-->
+                        <ListView Name="phonesList" ItemsSource="{Binding SaveListViewData}">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="✓">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <CheckBox Margin="5, 0" IsChecked="{Binding Path=Selected}"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn DisplayMemberBinding="{Binding Path=ViewName}" Width="Auto">Имя вида</GridViewColumn>
+                                    <GridViewColumn DisplayMemberBinding="{Binding Path=ViewType}">Тип вида</GridViewColumn>
+                                    <GridViewColumn DisplayMemberBinding="{Binding Path=ViewId}">ID</GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
                     </Border>
 
                     <Button Grid.Row="2" Grid.Column="1" Content="Сохранить сессию" Margin="3"
