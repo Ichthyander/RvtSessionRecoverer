@@ -19,43 +19,45 @@ namespace RvtSessionRecoverer.ViewModels
         private UIDocument uiDocument;
         private Document document;
 
-        Session UserSession;
+        Session LoadedSession;
+        Session CurrentSession;
 
-        //Text that represents opened views in current Revit session
-        string currentlyOpenedViews;
-        public string CurrentlyOpenedViews
+        #region ListView Properties
+        List<ListViewElement> _SaveListViewData;
+        public List<ListViewElement> SaveListViewData
         {
             get
             {
-                return currentlyOpenedViews;
+                return _SaveListViewData;
             }
             set
             {
-                currentlyOpenedViews = value;
+                _SaveListViewData = value;
                 OnPropertyChanged();
             }
         }
 
-        //TextBlock content
-        string loadedSession;
-        public string LoadedSession
+        List<ListViewElement> _LoadListViewData;
+        public List<ListViewElement> LoadListViewData
         {
             get
             {
-                return loadedSession;
+                return _LoadListViewData;
             }
             set
             {
-                loadedSession = value;
+                _LoadListViewData = value;
                 OnPropertyChanged();
             }
         }
+        #endregion
 
-        //Buttons
+        //Buttons actions
         public DelegateCommand SaveSessionCommand { get; }
         public DelegateCommand LoadSessionCommand { get; }
         public DelegateCommand RestoreSessionCommand { get; }
 
+        //Constructor
         public MainViewViewModel(ExternalCommandData commandData)
         {
             _commandData = commandData;
@@ -67,44 +69,41 @@ namespace RvtSessionRecoverer.ViewModels
             LoadSessionCommand = new DelegateCommand(OnLoadSessionCommand);
             RestoreSessionCommand = new DelegateCommand(OnRestoreSessionCommand);
 
-            //Initializing UserSession for output in TextBlock from "Save" Tab 
-            UserSession = new Session(ViewUtils.GetSessionViews(_commandData, uiDocument));
-            
-            //debug
-            StringBuilder output = new StringBuilder();     //debug purposes
+            LoadListViewData = new List<ListViewElement>();
+            SaveListViewData = new List<ListViewElement>();
 
-            List<View> Views = UserSession.GetViews(document);
+            //Initializing UserSession to display it in TextBlock from "Save" Tab 
+            CurrentSession = new Session(ViewUtils.GetSessionViews(_commandData, uiDocument));
+            List<View> Views = CurrentSession.GetViews(document);
 
+            //Display opened views as ListView
             foreach (View view in Views)
             {
-                output.Append(view.Name);
-                output.Append("\r");
-                uiDocument.ActiveView = view;
+                _SaveListViewData.Add(new ListViewElement(view.Name, view.ViewType.ToString(), view.Id.IntegerValue));
             }
-
-            CurrentlyOpenedViews = output.ToString();
         }
 
-        //Actions on Restore button
+        //Actions on "Restore" button
         private void OnRestoreSessionCommand()
         {
-            if (LoadedSession != null)
+            if (_LoadListViewData != null && _LoadListViewData.Count != 0)
             {
-                List<View> Views = UserSession.GetViews(document);
                 int counter = 0;
 
-                foreach (View view in Views)
+                //Creating List of selected Views
+                List<int> LoadViewIds = new List<int>();
+                foreach (ListViewElement listViewElement in _LoadListViewData)
                 {
-                    if (view != null)
+                    if (listViewElement.Selected)
                     {
-                        uiDocument.ActiveView = view;
+                        uiDocument.ActiveView = document.GetElement(new ElementId(listViewElement.ViewId)) as View;
                         counter++;
                     }
                 }
 
                 RaiseCloseRequest();
 
-                TaskDialog.Show("Готово!", "Восстановлено " + counter + " видов");
+                TaskDialog.Show("Готово!", "Восстановлено видов: " + counter); 
             }
         }
 
@@ -112,30 +111,41 @@ namespace RvtSessionRecoverer.ViewModels
         private void OnLoadSessionCommand()
         {
             //Getting list of UIViews by using method from model
-            UserSession = SerialisationUtils.DeserializeSession();
+            LoadedSession = SerialisationUtils.DeserializeSession();
 
-            if (UserSession != null)
+            if (LoadedSession != null)
             {
-                StringBuilder output = new StringBuilder();     
-                List<View> Views = UserSession.GetViews(document);
+                _LoadListViewData.Clear();  //clear list of loaded views
+                List<View> Views = LoadedSession.GetViews(document);
+
+                List<ListViewElement> LoadList = new List<ListViewElement>();
 
                 foreach (View view in Views)
                 {
                     if (view != null)
                     {
-                        output.Append(view.Name);
-                        output.Append("\r");
+                        LoadList.Add(new ListViewElement(view.Name, view.ViewType.ToString(), view.Id.IntegerValue));
                     }
                 }
 
-                LoadedSession = output.ToString();
+                LoadListViewData = LoadList;
             }
         }
 
         //Actions on Save button
         private void OnSaveSessionCommand()
         {
-            bool? result = SerialisationUtils.SerializeSession(UserSession);
+            //Creating List of selected Views
+            List<int> SaveViewIds = new List<int>();
+            foreach (ListViewElement listViewElement in _SaveListViewData)
+            {
+                if (listViewElement.Selected)
+                {
+                    SaveViewIds.Add(listViewElement.ViewId);
+                }
+            }
+
+            bool? result = SerialisationUtils.SerializeSession(new Session(SaveViewIds));
             if (result == true)
             {
                 RaiseCloseRequest();
