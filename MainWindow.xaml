@@ -5,7 +5,43 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RvtSessionRecoverer"
         mc:Ignorable="d"
-        Title="Менеджер сессий" Height="300" Width="300" MinHeight="300" MinWidth="300">
+        Title="Менеджер сессий" Height="350" Width="400" MinHeight="350" MinWidth="400">
+
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Control.FontFamily" Value="Verdana" />
+            <Setter Property="Control.Background" Value="LightGray" />
+            <Setter Property="Control.Foreground" Value="DarkSlateGray" />
+            <Setter Property="Control.Margin" Value="3" />
+            <Setter Property="Control.Padding" Value="3" />
+            <Setter Property="Control.FontSize" Value="11"/>
+        </Style>
+        <Style TargetType="Label">
+            <Setter Property="Control.FontFamily" Value="Verdana" />
+            <Setter Property="Control.Foreground" Value="DarkSlateGray" />
+            <Setter Property="Control.Margin" Value="3" />
+            <Setter Property="Control.Padding" Value="3" />
+            <Setter Property="Control.FontSize" Value="11"/>
+        </Style>
+        <Style TargetType="ListView">
+            <Setter Property="Control.FontFamily" Value="Verdana" />
+            <Setter Property="Control.Foreground" Value="DarkSlateGray" />
+            <Setter Property="Control.FontSize" Value="11"/>
+        </Style>
+        <Style TargetType="GridViewColumnHeader">
+            <Setter Property="Control.FontFamily" Value="Verdana" />
+            <Setter Property="Control.Foreground" Value="DarkSlateGray" />
+            <Setter Property="Control.Padding" Value="3" />
+            <Setter Property="Control.FontSize" Value="11"/>
+        </Style>
+        <Style TargetType="TabControl">
+            <Setter Property="Control.FontFamily" Value="Verdana" />
+            <Setter Property="Control.Foreground" Value="DarkSlateGray" />
+            <Setter Property="Control.Padding" Value="3" />
+            <Setter Property="Control.FontSize" Value="11"/>
+        </Style>
+    </Window.Resources>
+
     <Grid>
         <TabControl Height="Auto">
             <TabItem Header="Сохранение сессии">
@@ -17,57 +53,76 @@
 
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="1*"/>
                         <RowDefinition MaxHeight="100" Height="Auto"/>
                     </Grid.RowDefinitions>
 
                     <Label Grid.Row="0" Grid.ColumnSpan="2" Content="Открытые виды в текущей сессии:"/>
 
-                    <Border Grid.Row="1" Grid.ColumnSpan="2">
-                        <!--Should try to make list with ListBox or ListView-->
-                        <!--<ListBox  MinHeight="180"/>-->
-                        <!--<TextBlock MinHeight="180" TextWrapping="Wrap" Text="{Binding CurrentlyOpenedViews}"/>-->
-                        <ListView Name="phonesList" ItemsSource="{Binding SaveListViewData}">
+                    <Grid Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Stretch">
+                        <ListView ItemsSource="{Binding SaveListViewData}">
                             <ListView.View>
                                 <GridView>
-                                    <GridViewColumn Header="✓">
+                                    <GridViewColumn Header="✓" Width="40">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
-                                                <CheckBox Margin="5, 0" IsChecked="{Binding Path=Selected}"/>
+                                                <CheckBox Margin="5, 0" IsChecked="{Binding Path=Selected}" HorizontalAlignment="Center"/>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
-                                    <GridViewColumn DisplayMemberBinding="{Binding Path=ViewName}" Width="Auto">Имя вида</GridViewColumn>
-                                    <GridViewColumn DisplayMemberBinding="{Binding Path=ViewType}">Тип вида</GridViewColumn>
-                                    <GridViewColumn DisplayMemberBinding="{Binding Path=ViewId}">ID</GridViewColumn>
+                                    <GridViewColumn DisplayMemberBinding="{Binding Path=ViewName}" Width="120">Имя вида</GridViewColumn>
+                                    <GridViewColumn DisplayMemberBinding="{Binding Path=ViewType}" Width="100">Тип вида</GridViewColumn>
+                                    <GridViewColumn DisplayMemberBinding="{Binding Path=ViewId}" Width="60">ID</GridViewColumn>
                                 </GridView>
                             </ListView.View>
                         </ListView>
-                    </Border>
+                    </Grid>
 
-                    <Button Grid.Row="2" Grid.Column="1" Content="Сохранить сессию" Margin="3"
-                            Command="{Binding SaveSessionCommand}"/>
+                    <Button Grid.Row="2" Grid.Column="1" Content="Сохранить сессию" Command="{Binding SaveSessionCommand}" VerticalAlignment="Bottom"/>
                 </Grid>
             </TabItem>
-            
+
             <TabItem Header="Восстанавление сессии">
-                <StackPanel Grid.Column="1">
-                    <Label Content="Восстанавливаемые виды сессии"/>
-                    <TextBlock MinHeight="180" TextWrapping="Wrap" Text="{Binding LoadedSession}"/>
-                    <Grid>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition MaxHeight="100" Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Content="Восстанавливаемые виды сессии"/>
+
+                    <Grid Grid.Row="1" VerticalAlignment="Stretch">
+                        <ListView ItemsSource="{Binding LoadListViewData}">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="✓" Width="40">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <CheckBox Margin="5, 0" IsChecked="{Binding Path=Selected}" HorizontalAlignment="Center"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn DisplayMemberBinding="{Binding Path=ViewName}" Width="120">Имя вида</GridViewColumn>
+                                    <GridViewColumn DisplayMemberBinding="{Binding Path=ViewType}" Width="100">Тип вида</GridViewColumn>
+                                    <GridViewColumn DisplayMemberBinding="{Binding Path=ViewId}" Width="60">ID</GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </Grid>
+
+                    <Grid Grid.Row="2" Grid.Column="0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*"/>
                             <ColumnDefinition Width="1*"/>
                         </Grid.ColumnDefinitions>
 
-                        <Button Grid.Column="0" Content="Выбрать сессию" Margin="3"
-                                Command="{Binding LoadSessionCommand}"/>
-                        <Button Grid.Column="1" Content="Восстановить сессию" Margin="3"
-                                Command="{Binding RestoreSessionCommand}"/>
+                        <Button Grid.Column="0" Content="Выбрать сессию" Command="{Binding LoadSessionCommand}"/>
+                        <Button Grid.Column="1" Content="Восстановить сессию" Command="{Binding RestoreSessionCommand}"/>
                     </Grid>
 
-                    <TextBlock TextWrapping="Wrap" Text="{Binding OutputString}"/>
-                </StackPanel>
+                    <TextBlock TextWrapping="Wrap" Text="{Binding OutputString}" Grid.ColumnSpan="2"/>
+                </Grid>
             </TabItem>
         </TabControl>
     </Grid>
