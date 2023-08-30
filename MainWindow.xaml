@@ -60,7 +60,8 @@
                     <Label Grid.Row="0" Grid.ColumnSpan="2" Content="Открытые виды в текущей сессии:"/>
 
                     <Grid Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Stretch">
-                        <ListView ItemsSource="{Binding SaveListViewData}">
+                        <ListView ItemsSource="{Binding SaveListViewData}"
+                                  GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler">
                             <ListView.View>
                                 <GridView>
                                     <GridViewColumn Header="✓" Width="40">
@@ -93,7 +94,8 @@
                     <Label Grid.Row="0" Content="Восстанавливаемые виды сессии"/>
 
                     <Grid Grid.Row="1" VerticalAlignment="Stretch">
-                        <ListView ItemsSource="{Binding LoadListViewData}">
+                        <ListView ItemsSource="{Binding LoadListViewData}"
+                                  GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler">
                             <ListView.View>
                                 <GridView>
                                     <GridViewColumn Header="✓" Width="40">

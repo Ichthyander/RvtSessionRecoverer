@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <RevitAddIns>
 	<AddIn Type="Command">
-		<Assembly>"C:\Program Files\RevitAPITraining\di_ignatov\RvtSessionRecoverer.dll"</Assembly>
+		<Assembly>"C:\ProgramData\Autodesk\Revit\Addins\2019\RvtSessionRecoverer.dll"</Assembly>
 		<AddInId>E1A12499-30A8-4FD5-AFF0-1F47680D905C</AddInId>
 		<FullClassName>RvtSessionRecoverer.Main</FullClassName>
 		<VendorId>ADSK</VendorId>
